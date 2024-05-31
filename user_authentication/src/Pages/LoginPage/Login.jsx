@@ -143,15 +143,7 @@ const Login = () => {
 
                   <img onClick={loginwithgoogle} className="me-3" src={assets.google} alt="Google" />
                   {/* onClick={()=>login()} */}
-{/* <GoogleLogin
-  onSuccess={credentialResponse => {
-   const credentialResponseDecoded =jwtDecode(credentialResponse.credential);
-   console.log(credentialResponseDecoded);
-  }}
-  onError={() => {
-    console.log('Login Failed');
-  }}
-/>; */}
+
 
 
 
