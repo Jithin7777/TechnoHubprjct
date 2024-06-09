@@ -6,22 +6,16 @@ import { assets } from "../../images/assets";
 import { loginApi } from "../../Service/allApi";
 import { useNavigate } from "react-router-dom";
 import Header from "../../Components/Header";
-// import { GoogleLogin } from "@react-oauth/google";
-// import { jwtDecode } from "jwt-decode";
 import { useGoogleLogin } from '@react-oauth/google';
+import axios from "axios";
 
 const Login = () => {
   const [userlogin, setUserlogin] = useState({
     email: "",
     password: "",
   });
-
-  const loginwithgoogle=()=>{
-    window.open("http://localhost:8000/auth/google/callback","_self")
-  }
-
-  
   const navigate = useNavigate();
+
   const setInputs = (e) => {
     const { name, value } = e.target;
     setUserlogin({ ...userlogin, [name]: value });
@@ -35,21 +29,16 @@ const Login = () => {
     } else {
       try {
         const result = await loginApi(userlogin);
-        console.log("API response:", result); // Log the entire response to check its structure
+        console.log("API response:", result);
 
         if (result.status === 200) {
-          sessionStorage.setItem(
-            "Existinguser",
-            JSON.stringify(result.data.user)
-          );
+          sessionStorage.setItem("Existinguser", JSON.stringify(result.data.user));
           sessionStorage.setItem("token", result.data.token);
-          const token = result.data.token;
           const username = result.data.user.username || "User";
 
           alert(`${username}, you have logged in successfully`);
           setUserlogin({ email: "", password: "" });
           navigate("/home");
-          // console.log("Token:", token);
         } else {
           alert(result.response.data);
         }
@@ -60,10 +49,42 @@ const Login = () => {
     }
   };
 
+  const onSuccess = async (tokenResponse) => {
+    try {
+      const googleUser = await axios.get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenResponse.access_token}`, 
+        {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+            Accept: 'application/json'
+          }
+        }
+      );
+
+      const userData = {
+        username: googleUser.data.name,
+        email: googleUser.data.email,
+        image: googleUser.data.picture,
+        role: "User"
+      };
+
+      sessionStorage.setItem("Existinguser", JSON.stringify(userData));
+      navigate('/home');
+    } catch (error) {
+      console.error("Google login error:", error);
+      alert("An error occurred during Google login. Please try again.");
+    }
+  };
+
+  const login = useGoogleLogin({
+    onSuccess,
+    onFailure: (error) => console.error("Google login failure:", error)
+  });
+
   return (
     <div>
       <Container>
-        <Header></Header>
+        <Header />
 
         <Row className="mt-5">
           <Col lg={4}>
@@ -78,25 +99,15 @@ const Login = () => {
               </a>
               .
             </p>
-            </Col>
-<Col lg={2} >
-              <img
-                className="text-center"
-                src={assets.user_icon}
-                style={{
-                  height: "400px",
-                  marginTop: "150px",
-                  marginLeft:'40px'
-                  // position: "absolute",
-                  // top: "260px",
-                  // left: "460px",
-                }}
-                alt="User Icon"
-              />
-  
-</Col>         
-
-
+          </Col>
+          <Col lg={2}>
+            <img
+              className="text-center"
+              src={assets.user_icon}
+              style={{ height: "400px", marginTop: "150px", marginLeft: '40px' }}
+              alt="User Icon"
+            />
+          </Col>
           <Col lg={6} sm={6} xs={12} className="p-2">
             <h4 className="ms-5">Sign in</h4>
             <Form onSubmit={handleLogin} className="mt-5 ms-5 me-5">
@@ -111,6 +122,7 @@ const Login = () => {
                   placeholder="name@example.com"
                   onChange={setInputs}
                   name="email"
+                  
                   value={userlogin.email}
                 />
               </FloatingLabel>
@@ -140,21 +152,7 @@ const Login = () => {
               <div className="text-center">
                 <img className="me-3" src={assets.facebook} alt="Facebook" />
                 <img className="me-3" src={assets.apple} alt="Apple" />
-
-                  <img onClick={loginwithgoogle} className="me-3" src={assets.google} alt="Google" />
-                  {/* onClick={()=>login()} */}
-{/* <GoogleLogin
-  onSuccess={credentialResponse => {
-   const credentialResponseDecoded =jwtDecode(credentialResponse.credential);
-   console.log(credentialResponseDecoded);
-  }}
-  onError={() => {
-    console.log('Login Failed');
-  }}
-/>; */}
-
-
-
+                <img onClick={() => login()} className="me-3" src={assets.google} alt="Google" />
               </div>
             </Form>
           </Col>

@@ -1,11 +1,16 @@
 const users = require("../models/userModel")
 const jwt=require('jsonwebtoken')
 const bcrypt=require('bcrypt')
+const userotp=require('../models/userOtp')
+const nodemailer=require("nodemailer")
+ require("dotenv").config()
 
 
- 
+
+
+
 exports.register = async (req, res) => {
-  const { username, email, password, confirmPassword, googleId } = req.body;
+  const { username, email, password, confirmPassword } = req.body;
 
   // Validate that password and confirmPassword match
   if (password !== confirmPassword) {
@@ -19,28 +24,22 @@ exports.register = async (req, res) => {
       return res.status(400).json("User already exists! Please login.");
     }
 
-    let userId;
-    if (googleId) {
-      // Check for existing user with Google ID (if allowing registration with Google ID)
-      const existingGoogleUser = await users.findOne({ googleId });
-      if (existingGoogleUser) {
-        return res.status(400).json("Google ID already exists! Please login.");
-      }
-      userId = googleId;
-    }
-
+    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create a new user
     const newUser = new users({
       username,
       email,
       password: hashedPassword,
-      googleId: userId, 
+      confirmPassword,
     });
 
+    // Save the new user to the database
     await newUser.save();
 
+    // Respond with the new user's data
     res.status(200).json(newUser);
   } catch (error) {
     res.status(500).json(`Register API failed: ${error.message}`);
@@ -49,7 +48,7 @@ exports.register = async (req, res) => {
 
 
 // exports.register = async (req, res) => {
-//   const { username, email, password, confirmPassword } = req.body;
+//   const { username, email, password, confirmPassword, role } = req.body;
 
 //   // Validate that password and confirmPassword match
 //   if (password !== confirmPassword) {
@@ -63,22 +62,29 @@ exports.register = async (req, res) => {
 //       return res.status(400).json("User already exists! Please login.");
 //     }
 
+//     // Hash the password
 //     const salt = await bcrypt.genSalt(10);
 //     const hashedPassword = await bcrypt.hash(password, salt);
 
+//     // Create a new user with the specified role
 //     const newUser = new users({
 //       username,
 //       email,
-//       password: hashedPassword
+//       password: hashedPassword,
+//       role, // Set the role here
 //     });
 
+//     // Save the new user to the database
 //     await newUser.save();
 
+//     // Respond with the new user's data
 //     res.status(200).json(newUser);
 //   } catch (error) {
 //     res.status(500).json(`Register API failed: ${error.message}`);
 //   }
 // };
+
+
 
 
 exports.login = async (req, res) => {
@@ -107,6 +113,93 @@ exports.login = async (req, res) => {
 
 
 
-exports.admin=async(req,res)=>{
-  res.status(200).json("admin registred successfully")
+
+
+exports.dummyAPI = async (req, res) => {
+  try {
+      res.status(200).json({ userId: req.payload, message: 'Admin accessed!!' })
+  } catch (err) {
+      res.status(401).json(err)
+    }
 }
+
+
+//email config
+// const transporter=nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   port: 587,
+//   secure: false,
+//   service:"gmail",
+//   auth:{
+//     user:process.env.EMAIL,
+//     pass:process.env.PASSWORD,
+//   }
+// })
+
+
+
+// exports.userotpSend=async(req,res)=>{
+//   const {email}=req.body;
+//   if(!email){
+//     res.status(400).json({error:"please enter your email"})
+//   }
+//   try {
+//     const preuser=await users.findOne({email:email});
+
+//     if(preuser){
+//    const OTP=Math.floor(10000+Math.random()*900000);
+//    const existEmail=await userotp.findOne({email:email});
+//    if(existEmail){
+//     const updateData=await userotp.findByIdAndUpdate({_id:existEmail._id},{
+//       otp:OTP
+//     },{new:true}
+//   );
+//   await updateData.save();
+
+//   const mailOptions={
+//     from:process.env.EMAIL,
+//     to:email,
+//     subject:'Sending email for OTP validation',
+//     text:`OTP:-${OTP}`
+//   }
+// transporter.sendMail(mailOptions,(error,info)=>{
+//   if(error){
+//     console.log("error",error);
+//     res.status(400).json({error:"email not send"})
+//   }else{
+//     console.log("Email sent",info.response);
+//     res.status(200).json({msg:"Email sent successfully"})
+//   }
+// })
+
+//    }else{
+//     const saveOtpData=new userotp({
+//       email,otp:OTP
+//     })
+//     await saveOtpData.save();
+   
+//     const mailOptions={
+//       from:process.env.EMAIL,
+//       to:email,
+//       subject:'Sending email for OTP validation',
+//       text:`OTP:-${OTP}`
+//     }
+//   transporter.sendMail(mailOptions,(error,info)=>{
+//     if(error){
+//       console.log("error",error);
+//       res.status(400).json({error:"email not send"})
+//     }else{
+//       console.log("Email sent",info.response);
+//       res.status(200).json({msg:"Email sent successfully"})
+//     }
+//   })
+  
+//    }
+//     }
+//     else{
+//       res.status(400).json({error:"this user is not exist in your db"})
+//     }
+//   } catch (error) {
+//     res.status(400).json({error:"invalid Details",error})
+//   }
+// }

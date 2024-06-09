@@ -7,7 +7,7 @@ const Header = () => {
     <div>
       <Container fluid className="p-0">
         <Navbar className="w-100">
-          <Navbar.Brand className="fw-bold" style={{ marginLeft: "-70px" }}>
+          <Navbar.Brand className="fw-bold" style={{  }}>
             Logo
           </Navbar.Brand>
         </Navbar>

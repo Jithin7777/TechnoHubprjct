@@ -8,29 +8,48 @@ import { googleLogout } from "@react-oauth/google";
 import axios from "axios";
 
 const Home = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [userdata, setUserdata] = useState({});
   console.log("response", userdata);
 
+  
   const getUser = async () => {
     try {
       const response = await axios.get("http://localhost:8000/login/success", {
         withCredentials: true,
       });
-      // console.log("response",rersponse);
+      console.log("response",response);
       setUserdata(response.data.user);
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
     }
   };
 
+  const checkSessionStorage = () => {
+    const storedUser = sessionStorage.getItem("Existinguser");
+    if (storedUser) {
+      setUserdata(JSON.parse(storedUser));
+    }
+  };
+  
+
   useEffect(() => {
     getUser();
+    checkSessionStorage();
   }, []);
 
   const logout = () => {
     window.open("http://localhost:8000/logout", "_self");
+    sessionStorage.removeItem("Existinguser");
+    sessionStorage.removeItem("token");
+    // navigate('/login'); 
+
   };
+
+  // const logout = () => {
+  //   sessionStorage.removeItem("Existinguser");
+  //   sessionStorage.removeItem("token");
+  //   navigate('/login'); 
 
   return (
     <div>
@@ -97,6 +116,7 @@ const Home = () => {
                 ) : (
                   <p></p>
                 )}
+              
               </Nav>
             </Navbar.Collapse>
           </Container>

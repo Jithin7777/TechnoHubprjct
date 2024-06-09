@@ -1,23 +1,24 @@
-const users=require('../models/userModel')
+// const users = require("../models/userModel");
 
-const adminmiddleware=async(req,res,next)=>{
-    try {
-        const email=req.body.email;
-        const existinguser=await users.findOne({email:email})
-        if(!existinguser){
-            return res.status(403).json("user not found")
-        }
+// const rbacMiddleware = async (req, res, next) => {
+//     try {
+//         const email = req.body.email;
+//         const existingUser = await users.findOne({ email });
+//         console.log(existingUser);
 
-        if(existinguser.role !=="Admin"){
-            return res.status(403).json("access denied")
-    } 
-    else{
-        next()
-    }
-}
-    catch (error) {
-       res.status(404).json("internal server error") 
-    }
-}
+//         if (!existingUser) {
+//             return res.status(404).json({ error: "User not found" });
+//         }
 
-module.exports=adminmiddleware;
+//         if (existingUser.role != "admin") {
+//             console.log("role", existingUser.role);
+//             return res.status(403).json({ error: "Access Denied" });
+//         }
+//         next();
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Internal Server Error" });
+//     }
+// };
+
+// module.exports = rbacMiddleware;

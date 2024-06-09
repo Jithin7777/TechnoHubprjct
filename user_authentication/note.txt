@@ -37,35 +37,12 @@ const Register = () => {
       const result = await registerApi(user);
       if (result.status === 200) {
         alert(`${result.data.username} your account created successfully`);
-        // navigate('/login');
-        await generateOtp(email);
-        // Reset the form fields
-        setUser({
-          userName: "",
-          email: "",
-          password: "",
-          // phone: "",
-        });
-        navigate("/emailVerification");
-        sessionStorage.setItem("email", JSON.stringify(email));
-} else {
+        navigate('/login');
+      } else {
         alert(result.response.data);
       }
     }
   };
-
- const generateOtp=async(email)=>{
-  try {
-    const result=await generateOtpAPI({email})
-    if(result.status === 200){
-      alert('OTP Generated Successfully')
-    }
-  } catch (error) {
-    console.log(error);
-  }
- }
-
-
 
   // const onSuccess = async (tokenResponse) => {
   //   console.log(tokenResponse);

@@ -11,4 +11,16 @@ export const loginApi=async(body)=>{
     return await commonApi('POST',`${BASE_URL}/user/login`,body,"")
 }
 
-//login
+// export const sendOtp=async(body)=>{
+//     return await commonApi('POST',`${BASE_URL}/user/sendotp`,body,"")
+// }
+
+export const generateOtpAPI = async (body) => {
+    return await commonApi("POST", `${BASE_URL}/emailGeneration`, body, "");
+  };
+  
+
+  export const emailOtpVerificationAPI = async (body) => {
+    return await commonApi("POST", `${BASE_URL}/emailverification`, body, "");
+  };
+  
