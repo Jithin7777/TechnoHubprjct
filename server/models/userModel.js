@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -32,19 +32,8 @@ type:String
       type: String,
       default: null,
     },
-=======
 
-
-
-
-const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true
->>>>>>> e7c358c0ddec1c61ff4fc63c4c9c4ec416b7142f
-  },
+},
   { timestamps: true }
 );
 
