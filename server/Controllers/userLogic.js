@@ -1,9 +1,8 @@
 const users = require("../models/userModel")
 const jwt=require('jsonwebtoken')
 const bcrypt=require('bcrypt')
-const userotp=require('../models/userOtp')
-const nodemailer=require("nodemailer")
- require("dotenv").config()
+
+require("dotenv").config()
 
 
 
