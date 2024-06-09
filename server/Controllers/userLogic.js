@@ -47,6 +47,7 @@ exports.register = async (req, res) => {
 };
 
 
+<<<<<<< HEAD
 // exports.register = async (req, res) => {
 //   const { username, email, password, confirmPassword, role } = req.body;
 
@@ -84,6 +85,8 @@ exports.register = async (req, res) => {
 //   }
 // };
 
+=======
+>>>>>>> e7c358c0ddec1c61ff4fc63c4c9c4ec416b7142f
 
 
 
@@ -113,6 +116,7 @@ exports.login = async (req, res) => {
 
 
 
+<<<<<<< HEAD
 
 
 exports.dummyAPI = async (req, res) => {
@@ -203,3 +207,8 @@ exports.dummyAPI = async (req, res) => {
 //     res.status(400).json({error:"invalid Details",error})
 //   }
 // }
+=======
+exports.admin=async(req,res)=>{
+  res.status(200).json("admin registred successfully")
+}
+>>>>>>> e7c358c0ddec1c61ff4fc63c4c9c4ec416b7142f

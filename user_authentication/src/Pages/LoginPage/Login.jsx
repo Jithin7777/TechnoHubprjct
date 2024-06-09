@@ -152,7 +152,17 @@ const Login = () => {
               <div className="text-center">
                 <img className="me-3" src={assets.facebook} alt="Facebook" />
                 <img className="me-3" src={assets.apple} alt="Apple" />
+<<<<<<< HEAD
                 <img onClick={() => login()} className="me-3" src={assets.google} alt="Google" />
+=======
+
+                  <img onClick={loginwithgoogle} className="me-3" src={assets.google} alt="Google" />
+                  {/* onClick={()=>login()} */}
+
+
+
+
+>>>>>>> e7c358c0ddec1c61ff4fc63c4c9c4ec416b7142f
               </div>
             </Form>
           </Col>
